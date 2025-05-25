@@ -12,7 +12,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Ame />} />
             <Route path="/server" element={<Sample />} />   
-          </Routes>
+          </Routes>   
         </div>
       </Router>
     </>
