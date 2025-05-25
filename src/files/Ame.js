@@ -144,8 +144,7 @@ export default function App() {
  
         let sec_element = document.getElementById('sec_element'); 
         sec_element.style.display = 'none' ; 
-    }
-   
+    }  
     
 
          
