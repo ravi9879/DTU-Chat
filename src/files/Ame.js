@@ -151,7 +151,7 @@ export default function App() {
     return (
         <> 
         <div className='container'>
-            <h1 id='heading'>SUDUKO SOLVER </h1>
+            <h1 id='heading'>SUDUKO-SOLVER </h1>
             <div id='first_element'>
                 <h1>Enter The Numbers :</h1>
                 <table>  
