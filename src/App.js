@@ -1,22 +1,23 @@
-import { BrowserRouter as Router, Routes, Route, } from 'react-router-dom';
-import Ame from './files/Ame'
-import Sample from './files/Sample'  
-import './files/Style.css'
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';  
+import Login from './components/Login';
+import Chat from './components/Chat';
+import SignUp from './components/SignUp';
 
 function App() {
-  return ( 
-    <>
+
+  return (
+    <div>
       <Router>
-        <div>
-          <Routes>
-            <Route path="/" element={<Ame />} />
-            <Route path="/server" element={<Sample />} />   
-          </Routes>   
-        </div>
+
+        <Routes>
+          <Route path='/' element={<Login />}></Route> 
+          <Route path='/chat' element={<Chat />}></Route> 
+          <Route path='/sign-up' element={<SignUp />}></Route> 
+        </Routes>
       </Router>
-    </>
+    </div>
   );
 }
+
 
 export default App;
