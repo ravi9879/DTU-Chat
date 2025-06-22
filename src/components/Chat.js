@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 import Url from "../stores/Url"; 
-const socket = io("http://localhost:5000"); 
+const socket = io(Url); 
 function App() {
   const [messages, setMessages] = useState([]);
   let cnt = 0;
