@@ -2,7 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 import Url from "../stores/Url";
-const socket = io(Url, { transports: ["polling"] });
+
+const socket = io(Url, { transports: ["polling"] });  
 
 function App() {
   const [messages, setMessages] = useState([]);
