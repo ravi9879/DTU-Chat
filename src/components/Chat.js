@@ -1,50 +1,51 @@
 import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
-import Url from "../stores/Url"; 
-const socket = io("http://localhost:5000"); 
+import Url from "../stores/Url";
+const socket = io(Url, { transports: ['polling'] });
+
 function App() {
-  const [messages, setMessages] = useState([]);
-  let cnt = 0;
+  const [messages, setMessages] = useState([]); 
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
   const user_id = window.localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => { 
-    socket.on("receiveMessage", (msg) =>  {setMessages([...msg]) } ); 
+  useEffect(() => {
+    socket.on("receiveMessage", (msg) => {
+      setMessages([...msg]);
+    });
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const send = () => {
     if (input.trim() === "") return;
     socket.emit("sendMessage", {
-      sender: "user1",
+      sender: user_id,
       receiver: "bot_id_here", // replace with real bot ID
       content: input,
     });
-    setInput(""); 
+    setInput("");
   };
- 
+
   const clearChats = (event) => {
     event.preventDefault();
     setLoading(true);
     try {
       axios
-        .post(`${Url}/clear-chat/`, { 
-          user_id : user_id 
+        .post(`${Url}/clear-chat/`, {
+          user_id: user_id,
         })
         .then((res) => {
-          console.log(res) ;
-          setMessages([]) ;
-          setLoading(false); 
+          console.log(res);
+          setMessages([]);
+          setLoading(false);
         });
     } catch (err) {
       setLoading(false);
-      console.log("error at client side", err); 
-    } 
+      console.log("error at client side", err);
+    }
   };
-
 
   if (loading) {
     return (
@@ -91,7 +92,9 @@ function App() {
               >
                 <span className="block font-semibold mb-1">{msg.sender}</span>
                 {msg.content}
-                <div><small>{msg.timestamp}</small></div>  
+                <div>
+                  <small>{msg.timestamp}</small>
+                </div>
               </div>
             </div>
           ))}
