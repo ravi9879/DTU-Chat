@@ -2,28 +2,21 @@ import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 import Url from "../stores/Url";
-const socket = io(Url, { transports: ["polling"] });
+const socket = io(Url, { transports: ['polling'] });
 
 function App() {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([]); 
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
   const user_id = window.localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
 
-  // socket.on("receiveMessage", (msg) => {
-  //   console.log(msg);
-  //   setMessages((prev) => {
-  //     return [...prev, msg];
-  //   });
-  // });
-
   useEffect(() => {
     socket.on("receiveMessage", (msg) => {
-    // console.log(msg);
-    setMessages([...msg]);
-  });
-    console.log(messages);
+      console.log(msg) ;
+      setMessages((prev) => {
+        return [...prev ,msg]});
+    });
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -33,14 +26,7 @@ function App() {
       sender: user_id,
       receiver: "bot_id_here", // replace with real bot ID
       content: input,
-    });
-    setMessages((prev) => {
-      return [...prev,{
-      sender: user_id,
-      receiver: "bot_id_here", // replace with real bot ID
-      content: input,
-    } ];
-    });
+    }); 
     setInput("");
   };
 
@@ -96,12 +82,12 @@ function App() {
             <div
               key={i}
               className={`flex ${
-                msg.sender === user_id ? "justify-end" : "justify-start"
+                msg.sender === "user1" ? "justify-end" : "justify-start"
               }`}
             >
               <div
                 className={`max-w-[70%] px-4 py-2 rounded-2xl shadow text-sm ${
-                  msg.sender === user_id
+                  msg.sender === "user1"
                     ? "bg-blue-500 text-white rounded-br-none"
                     : "bg-gray-200 text-gray-800 rounded-bl-none"
                 }`}
