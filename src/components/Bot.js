@@ -4,6 +4,9 @@ import axios from "axios";
 import Url from "../stores/Url";
 const socket = io(Url, { transports: ['polling'] });
 
+// Make sure Bootstrap CSS is imported in your index.js or App.js
+// import 'bootstrap/dist/css/bootstrap.min.css';
+
 function App() {
   const [messages, setMessages] = useState([]); 
   const [input, setInput] = useState("");
@@ -13,11 +16,10 @@ function App() {
 
   useEffect(() => {
     socket.on("receiveMessage", (msg) => {
-      console.log(msg) ;
-      setMessages((prev) => {
-        return [...prev ,msg]});
+      setMessages((prev) => [...prev, msg]);
     });
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    return () => socket.off("receiveMessage");
   }, [messages]);
 
   const send = () => {
@@ -39,23 +41,21 @@ function App() {
           user_id: user_id,
         })
         .then((res) => {
-          console.log(res);
           setMessages([]);
           setLoading(false);
         });
     } catch (err) {
       setLoading(false);
-      console.log("error at client side", err);
     }
   };
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-85 z-50">
+      <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <div className="mt-4 font-semibold text-blue-600 text-lg">
-            Logging in...
+          <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status"></div>
+          <div className="mt-4 fw-semibold text-primary fs-5">
+            Please wait...
           </div>
         </div>
       </div>
@@ -63,60 +63,70 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 flex items-center justify-center">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl flex flex-col h-[32rem]">
+    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+      <div className="card shadow-lg" style={{ width: 420, maxWidth: "100%", minHeight: 600 }}>
         {/* Header */}
-        <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xl font-bold px-6 py-4 rounded-t-2xl shadow flex items-center justify-between">
-          <span>SmartChat</span>
+        <div className="card-header bg-success text-white d-flex justify-content-between align-items-center">
+          <span className="fw-bold fs-4">SmartChat Bot</span>
           <button
             onClick={clearChats}
-            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm font-semibold transition"
+            className="btn btn-danger btn-sm fw-semibold"
             title="Clear Chats"
           >
             Clear Chats
           </button>
         </div>
         {/* Chat messages */}
-        <div className="flex-1 overflow-y-auto px-4 py-2 space-y-2">
+        <div className="card-body overflow-auto px-3 py-2" style={{ height: 400 }}>
+          {messages.length === 0 && (
+            <div className="text-center text-secondary mt-5">No messages yet.</div>
+          )}
           {messages.map((msg, i) => (
             <div
               key={i}
-              className={`flex ${
-                msg.sender === "user1" ? "justify-end" : "justify-start"
-              }`}
+              className={`d-flex mb-2 ${msg.sender === user_id ? "justify-content-end" : "justify-content-start"}`}
             >
               <div
-                className={`max-w-[70%] px-4 py-2 rounded-2xl shadow text-sm ${
-                  msg.sender === "user1"
-                    ? "bg-blue-500 text-white rounded-br-none"
-                    : "bg-gray-200 text-gray-800 rounded-bl-none"
+                className={`p-2 rounded-3 shadow-sm ${msg.sender === user_id
+                  ? "bg-success text-white"
+                  : "bg-light border text-dark"
                 }`}
+                style={{ maxWidth: "70%" }}
               >
-                <span className="block font-semibold mb-1">{msg.sender}</span>
-                {msg.content}
-                <div>
-                  <small>{msg.timestamp}</small>
-                </div>
+                <div className="fw-bold small mb-1">{msg.sender}</div>
+                <div>{msg.content}</div>
+                {msg.timestamp && (
+                  <div className="text-end small text-secondary">{msg.timestamp}</div>
+                )}
               </div>
             </div>
           ))}
           <div ref={messagesEndRef} />
         </div>
         {/* Input */}
-        <div className="p-4 bg-gray-50 rounded-b-2xl flex space-x-2">
-          <input
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a message..."
-            onKeyDown={(e) => e.key === "Enter" && send()}
-          />
-          <button
-            onClick={send}
-            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg font-semibold shadow hover:from-blue-600 hover:to-purple-600 transition"
+        <div className="card-footer bg-white border-0">
+          <form
+            className="d-flex gap-2"
+            onSubmit={e => {
+              e.preventDefault();
+              send();
+            }}
           >
-            Send
-          </button>
+            <input
+              className="form-control"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Type a message..."
+              onKeyDown={(e) => e.key === "Enter" && send()}
+            />
+            <button
+              type="submit"
+              className="btn btn-success fw-semibold"
+              disabled={input.trim() === ""}
+            >
+              Send
+            </button>
+          </form>
         </div>
       </div>
     </div>

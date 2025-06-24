@@ -1,7 +1,10 @@
 import { useRef, useState } from "react";
 import axios from "axios";
-import { useNavigate, Link, redirect } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Url from "../stores/Url";
+
+// Make sure Bootstrap CSS is imported in your index.js or App.js
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function SignUp() {
   const password = useRef();
@@ -31,65 +34,58 @@ export default function SignUp() {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-100 bg-opacity-85 z-50">
+      <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <div className="mt-4 font-semibold text-blue-600 text-lg">
-            Logging in...
+          <div className="spinner-border text-primary" style={{ width: "3rem", height: "3rem" }} role="status"></div>
+          <div className="mt-4 fw-semibold text-primary fs-5">
+            Signing up...
           </div>
         </div>
       </div>
     );
   }
-  return (
-    <>
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-center mb-6 text-blue-600">
-            Sign Up
-          </h2>
-          <form onSubmit={studentLogin}>
-            <div className="mb-4">
-              <label className="block font-medium mb-1">Email Id</label>
-              <input
-                type="text"
-                name="email"
-                placeholder="Enter your roll no"
-                ref={email}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                required
-              />
-            </div>
 
-            <div className="mb-4">
-              <label className="block font-medium mb-1">Password</label>
-              <input
-                type="password"
-                name="password"
-                placeholder="Enter your password"
-                ref={password}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-                required
-              />
-            </div>
-            <button
-              className="w-full py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 transition"
-              type="submit"
-            >
-              Submit
-            </button>
-          </form>
-          <p className="text-center mt-4 text-gray-500">
-            Not a user? Please contact{" "}
-            <Link
-              to="/admin"
-              className="text-red-600 font-semibold hover:underline"
-            >
-              Admin
-            </Link>
-          </p>
-        </div>
+  return (
+    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <div className="card shadow p-4" style={{ minWidth: 350, maxWidth: 400 }}>
+        <h2 className="text-center mb-4 text-primary">Sign Up</h2>
+        <form onSubmit={studentLogin}>
+          <div className="mb-3">
+            <label className="form-label">Email Id</label>
+            <input
+              type="text"
+              name="email"
+              placeholder="Enter your email"
+              ref={email}
+              className="form-control"
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              ref={password}
+              className="form-control"
+              required
+            />
+          </div>
+          <button
+            className="btn btn-primary w-100 fw-semibold"
+            type="submit"
+          >
+            Submit
+          </button>
+        </form>
+        <p className="text-center mt-3 text-secondary">
+          Not a user? Please contact{" "}
+          <Link to="/admin" className="text-danger fw-semibold text-decoration-underline">
+            Admin
+          </Link>
+        </p>
       </div>
-    </>
+    </div>
   );
 }
