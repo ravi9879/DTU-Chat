@@ -2,13 +2,14 @@ import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 import Url from "../stores/Url";
-const socket = io(Url, { transports: ['polling'] });
 
 // Make sure Bootstrap CSS is imported in your index.js or App.js
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
+const socket = io(Url, { transports: ["polling"] });
+
 function App() {
-  const [messages, setMessages] = useState([]); 
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
   const user_id = window.localStorage.getItem("token");
@@ -16,9 +17,10 @@ function App() {
 
   useEffect(() => {
     socket.on("receiveMessage", (msg) => {
-      setMessages((prev) => [...prev, msg]);
+      setMessages([...msg]);
     });
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Cleanup
     return () => socket.off("receiveMessage");
   }, [messages]);
 
@@ -26,9 +28,17 @@ function App() {
     if (input.trim() === "") return;
     socket.emit("sendMessage", {
       sender: user_id,
-      receiver: "bot_id_here", // replace with real bot ID
+      receiver: "bot_id_here",
       content: input,
-    }); 
+    });
+    setMessages((prev) => [
+      ...prev,
+      {
+        sender: user_id,
+        receiver: "bot_id_here",
+        content: input,
+      },
+    ]);
     setInput("");
   };
 
@@ -67,7 +77,7 @@ function App() {
       <div className="card shadow-lg" style={{ width: 420, maxWidth: "100%", minHeight: 600 }}>
         {/* Header */}
         <div className="card-header bg-success text-white d-flex justify-content-between align-items-center">
-          <span className="fw-bold fs-4">SmartChat Bot</span>
+          <span className="fw-bold fs-4">Smart Chat Bot</span>
           <button
             onClick={clearChats}
             className="btn btn-danger btn-sm fw-semibold"
@@ -88,7 +98,7 @@ function App() {
             >
               <div
                 className={`p-2 rounded-3 shadow-sm ${msg.sender === user_id
-                  ? "bg-success text-white"
+                  ? "bg-primary text-white"
                   : "bg-light border text-dark"
                 }`}
                 style={{ maxWidth: "70%" }}
@@ -121,7 +131,7 @@ function App() {
             />
             <button
               type="submit"
-              className="btn btn-success fw-semibold"
+              className="btn btn-primary fw-semibold"
               disabled={input.trim() === ""}
             >
               Send

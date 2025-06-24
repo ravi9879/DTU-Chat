@@ -9,7 +9,7 @@ function Home() {
         <div className="d-flex flex-column gap-2">
           <a href="/chat" className="btn btn-primary fw-semibold">Go to Chat</a>
           <a href="/bot" className="btn btn-outline-primary fw-semibold">Try Chat Bot</a>
-          <a href="/sign-up" className="btn btn-outline-secondary fw-semibold">Sign Up</a>
+          {/* <a href="/sign-up" className="btn btn-outline-secondary fw-semibold">Sign Up</a> */}
         </div>
       </div>
     </div>

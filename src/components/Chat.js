@@ -28,7 +28,7 @@ function App() {
     if (input.trim() === "") return;
     socket.emit("sendMessage", {
       sender: user_id,
-      receiver: "bot_id_here",
+      receiver: "all",
       content: input,
     });
     setMessages((prev) => [
